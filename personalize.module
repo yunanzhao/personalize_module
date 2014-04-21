@@ -45,6 +45,16 @@ function personalize_help($path, $arg) {
 function personalize_menu() {
   $items = array();
   $items['admin/config/content/personalize'] = array(
+    'title' => 'Personalization Settings',
+    'description' => 'Configuration settings for the Personalization module and related plugins.',
+    'route_name' => 'personalize_settings',
+  );
+  $items['admin/structure/personalize/agents'] = array(
+    'title' => 'Personalization Campaigns',
+    'description' => 'Manage your personalization campaigns.',
+    'route_name' => 'personalize.agent_list',
+  );
+  /*$items['admin/config/content/personalize'] = array(
     'type' => MENU_NORMAL_ITEM,
     'title' => 'Personalization settings',
     'description' => 'Configuration settings for the Personalization module and related plugins.',
@@ -185,7 +195,7 @@ function personalize_menu() {
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
-  );
+  );*/
   return $items;
 }
 
@@ -228,7 +238,7 @@ function personalize_delete_agent_access($agent) {
 /**
  * Implements hook_page_build().
  */
-function personalize_page_build(&$page) {
+/*function personalize_page_build(&$page) {
   // Add the necessary JavaScript for personalization.
   $path = drupal_get_path('module', 'personalize');
   $settings = array(
@@ -335,19 +345,7 @@ function personalize_page_build(&$page) {
   // little chance of a redirect happening, but it can't be so late that
   // JavaScript files can't be added to the page.
   personalize_process_goals($page);
-}
-
-/**
- * Implements hook_overlay_child_initialize().
- */
-function personalize_overlay_child_initialize() {
-  $page = array();
-  personalize_page_build($page);
-  if (!isset($page['page_top']['personalization']['#attached'])) {
-    return;
-  }
-  drupal_process_attached($page['page_top']['personalization']);
-}
+}*/
 
 /**
  * Implements hook_form_FORM_ID_alter().
