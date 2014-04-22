@@ -1,0 +1,27 @@
+personalize_settings:
+  path: '/admin/config/content/personalize'
+  defaults:
+    _form: '\Drupal\personalize\Form\SettingsForm'
+    _title: 'Personalization Settings'
+  requirements:
+    _permission: 'administer personalization'
+personalize.agent_list:
+  path: '/admin/structure/personalize/agents'
+  defaults:
+    _entity_list: 'personalize_agent'
+  requirements:
+    _permission: 'administer personalization'
+
+personalize.agent_add:
+  path: '/admin/structure/personalize/agents/add'
+  defaults:
+    _entity_form: 'personalize_agent.default'
+  requirements:
+    _permission: 'administer personalization'
+
+personalize.agent_edit:
+  path: '/admin/structure/personalize/agents/{personalize_agent}'
+  defaults:
+    _entity_form: 'personalize_agent.default'
+  requirements:
+    _permission: 'administer personalization'

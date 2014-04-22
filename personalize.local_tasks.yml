@@ -1,0 +1,5 @@
+personalize_settings_tab:
+  route_name: personalize_settings
+  title: 'General'
+  tab_root_id: personalize_settings_tab
+

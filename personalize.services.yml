@@ -1,0 +1,11 @@
+services:
+  plugin.manager.personalize_agent:
+    class: Drupal\personalize\Plugin\Type\AgentManager
+    arguments: ['@container.namespaces', '@cache.personalize_agent', '@language_manager', '@module_handler']
+  cache.personalize_agent:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory_method: get
+    factory_service: cache_factory
+    arguments: [personalize_agent]
