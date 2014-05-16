@@ -2,42 +2,29 @@
 
 /**
  * @file
- * Contains \Drupal\block\BlockBase.
+ * Contains \Drupal\personalize\AgentBase.
  */
 
 namespace Drupal\personalize;
 
 use Drupal\Core\Plugin\PluginBase;
-use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Language\Language;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Abstract base class for agents, providing default implementations of some methods.
  */
-abstract class AgentBase extends PluginBase implements AgentInterface {
+abstract class AgentBase extends PluginBase implements AgentInterface, ContainerFactoryPluginInterface {
 
-  public $id;
-  /**
-   * The machine_name of the agent.
-   *
-   * @var string
-   */
-  protected $machineName;
+  protected $name;
 
   /**
    * The title of the agent.
    *
    * @var string
    */
-  protected $title;
-
-  /**
-   * An array of data describing the agent.
-   *
-   * @var array
-   */
-  protected $data;
+  protected $label;
 
   /**
    * {@inheritdoc}
@@ -46,52 +33,35 @@ abstract class AgentBase extends PluginBase implements AgentInterface {
     return TRUE;
   }
 
-  /**
-   * {@inheritdoc}
-   *
-   * Creates a generic configuration form for all agent types. Individual
-   * block plugins can add elements to this form by overriding
-   * BlockBase::blockForm(). Most block plugins should not override this
-   * method unless they need to alter the generic form elements.
-   *
-   * @see \Drupal\block\BlockBase::blockForm()
-   */
-  public function buildConfigurationForm(array $form, array &$form_state) {
-    $form['stuff'] = array(
-      '#title' => 'ohai',
-      '#type' => 'textfield',
-    );
-    return $form;
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    // $configuration is actually the whole entity info. Let's extract
+    // what the plugin actually needs
+    return new static($configuration['name'], $configuration['label'], $configuration['configuration'], $plugin_id, $plugin_definition);
   }
 
   /**
-   * {@inheritdoc}
+   * Constructs a Drupal\Component\Plugin\PluginBase object.
    *
-   * Most block plugins should not override this method. To add validation
-   * for a specific block type, override BlockBase::blockValdiate().
-   *
-   * @see \Drupal\block\BlockBase::blockValidate()
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
    */
-  public function validateConfigurationForm(array &$form, array &$form_state) {
-    $this->blockValidate($form, $form_state);
+  public function __construct($agent_name, $agent_label, array $configuration, $plugin_id, $plugin_definition) {
+    $this->name = $agent_name;
+    $this->label = $agent_label;
+    $this->configuration = $configuration;
+    $this->pluginId = $plugin_id;
+    $this->pluginDefinition = $plugin_definition;
   }
 
-  /**
-   * {@inheritdoc}
-   *
-   * Most block plugins should not override this method. To add submission
-   * handling for a specific block type, override BlockBase::blockSubmit().
-   *
-   * @see \Drupal\block\BlockBase::blockSubmit()
-   */
-  public function submitConfigurationForm(array &$form, array &$form_state) {
-    // Process the block's submission handling if no errors occurred only.
-    if (!form_get_errors($form_state)) {
-      $this->configuration['label'] = $form_state['values']['label'];
-      $this->configuration['label_display'] = $form_state['values']['label_display'];
-      $this->configuration['module'] = $form_state['values']['module'];
-      $this->blockSubmit($form, $form_state);
-    }
+  public function getName() {
+    return $this->name;
   }
 
+  public function getLabel() {
+    return $this->label;
+  }
 }

@@ -15,13 +15,21 @@ personalize.agent_list:
 personalize.agent_add:
   path: '/admin/structure/personalize/agents/add'
   defaults:
-    _entity_form: 'personalize_agent.default'
+    _entity_form: 'personalize_agent.add'
   requirements:
     _permission: 'administer personalization'
 
 personalize.agent_edit:
   path: '/admin/structure/personalize/agents/{personalize_agent}'
   defaults:
-    _entity_form: 'personalize_agent.default'
+    _entity_form: 'personalize_agent.edit'
+  requirements:
+    _permission: 'administer personalization'
+
+personalize.agent_delete:
+  path: '/admin/structure/personalize/agents/{personalize_agent}/delete'
+  defaults:
+    _entity_form: 'personalize_agent.delete'
+    _title: 'Delete'
   requirements:
     _permission: 'administer personalization'

@@ -1229,77 +1229,17 @@ function personalize_visitor_actions_page_build(&$page, $actions) {
 }
 
 /**
- * =======================================================================
- *  P L U G I N   I N F O
- * =======================================================================
- */
-
-/**
- * Implements hook_ctools_plugin_type().
- */
-function personalize_ctools_plugin_type() {
-  // Plugin to define new types of decision agents
-  $plugins['agent_type'] = array(
-    'cache' => TRUE,
-    'use hooks' => TRUE,
-    'classes' => array('handler'),
-  );
-
-  // Plugin to add contextual information to visitors
-  $plugins['visitor_context'] = array(
-    'cache' => TRUE,
-    'use hooks' => TRUE,
-    'classes' => array('handler')
-  );
-
-  // Plugin to define Option Set types.
-  $plugins['option_set_type'] = array(
-    'cache' => TRUE,
-    'use hooks' => TRUE,
-    'classes' => array('handler')
-  );
-
-  return $plugins;
-}
-
-/**
- * Fetch plugin.
- *
- * @param $agent_type
- *   Name of a specific agent_type to retrieve.
- *
- * @return
- *   An array with information about the requested agent type.
- */
-function personalize_get_agent_type($agent_type) {
-  ctools_include('plugins');
-  return ctools_get_plugins('personalize', 'agent_type', $agent_type);
-}
-
-/**
- * Fetch metadata for all agent_type plugins.
- *
- * @return
- *   An array of arrays with information about all available agent types.
- */
-function personalize_get_agent_types() {
-  ctools_include('plugins');
-  return ctools_get_plugins('personalize', 'agent_type');
-}
-
-/**
  * Load a particular agent from the database or from code.
  */
-function personalize_agent_load($name, $reset = FALSE, $include_completed = FALSE) {
+/*function personalize_agent_load($name, $reset = FALSE, $include_completed = FALSE) {
   $agents = personalize_agent_load_multiple(array($name), array(), $reset, $include_completed);
   return isset($agents[$name]) ? $agents[$name] : NULL;
-}
+}*/
 
 /**
  * Load all or specified agents from the database or from code.
  */
-function personalize_agent_load_multiple($names = array(), $conditions = array(), $reset = FALSE, $include_completed = FALSE) {
-  ctools_include('export');
+/*function personalize_agent_load_multiple($names = array(), $conditions = array(), $reset = FALSE, $include_completed = FALSE) {
   if ($reset) {
     // @todo No way to just reset the cache for agents specified in the $names
     //   param?
@@ -1328,63 +1268,14 @@ function personalize_agent_load_multiple($names = array(), $conditions = array()
     $active_only[$name] = $agent;
   }
   return $active_only;
-}
+}*/
 
 /**
  * Load all agents of a particular type.
  */
-function personalize_agent_load_by_type($type, $reset = FALSE, $include_completed = FALSE) {
+/*function personalize_agent_load_by_type($type, $reset = FALSE, $include_completed = FALSE) {
   return personalize_agent_load_multiple(array(), array('agent_type' => $type), $reset, $include_completed);
-}
-
-/**
- * Fetch plugin.
- *
- * @param $name
- *   Name of a specific visitor_context plugin to retrieve.
- *
- * @return
- *   An array with information about the requested visitor context plugin.
- */
-function personalize_get_visitor_context($name) {
-  ctools_include('plugins');
-  return ctools_get_plugins('personalize', 'visitor_context', $name);
-}
-
-/**
- * Fetch metadata for all visitor_context plugins.
- *
- * @return
- *   An array of arrays with information about all available visitor_context plugins.
- */
-function personalize_get_visitor_contexts() {
-  ctools_include('plugins');
-  return ctools_get_plugins('personalize', 'visitor_context');
-}
-/**
- * Fetch plugin.
- *
- * @param $option_set_type
- *   Name of a specific Option Set type to retrieve.
- *
- * @return
- *   An array with information about the requested Option Set type.
- */
-function personalize_get_option_set_type($option_set_type) {
-  ctools_include('plugins');
-  return ctools_get_plugins('personalize', 'option_set_type', $option_set_type);
-}
-
-/**
- * Fetch metadata for all option_set_type plugins.
- *
- * @return
- *   An array of arrays with information about all available Option Set types.
- */
-function personalize_get_option_set_types() {
-  ctools_include('plugins');
-  return ctools_get_plugins('personalize', 'option_set_type');
-}
+}*/
 
 /**
  * =======================================================================

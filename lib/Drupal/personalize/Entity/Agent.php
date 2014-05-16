@@ -17,46 +17,57 @@ use Drupal\views\ViewExecutable;
 /**
  * Defines an agent configuration entity class.
  *
- * @EntityType(
+ * @ConfigEntityType(
  *   id = "personalize_agent",
  *   label = @Translation("Campaign"),
- *   module = "personalize",
  *   controllers = {
- *     "storage" = "Drupal\Core\Config\Entity\ConfigEntityStorage",
- *     "access" = "Drupal\Core\Entity\EntityAccessController",
- *     "list_builder" = "Drupal\personalize\PersonalizeAgentListController",
  *     "form" = {
- *       "default" = "Drupal\personalize\AgentFormController",
- *     }
+ *       "add" = "Drupal\personalize\Form\AgentAddForm",
+ *       "edit" = "Drupal\personalize\Form\AgentEditForm",
+ *       "delete" = "Drupal\personalize\Form\AgentDeleteForm",
+ *     },
+ *     "list_builder" = "Drupal\personalize\AgentListBuilder",
  *   },
  *   admin_permission = "administer personalization",
- *   config_prefix = "personalize.agent",
+ *   config_prefix = "agent",
  *   entity_keys = {
- *     "id" = "id",
- *     "label" = "label",
- *     "uuid" = "uuid",
+ *     "id" = "name",
+ *     "label" = "label"
  *   },
  *   links = {
- *     "edit-form" = "personalize.agent_edit"
+ *     "edit-form" = "personalize.agent_edit",
+ *     "delete-form" = "personalize.agent_delete"
  *   }
  * )
  */
 class Agent extends ConfigEntityBase {
+
   /**
-   * The ID of the block.
+   * The name of the agent.
    *
    * @var string
    */
-  public $id;
-
-  protected $data;
-
-  protected $mvt_enabled;
+  public $name;
 
   /**
-   * The label of the view.
+   * The agent label.
+   *
+   * @var string
    */
-  protected $label;
+  public $label;
+
+  /**
+   * The plugin ID of the action.
+   *
+   * @var string
+   */
+  protected $plugin;
+
+  protected $pluginConfigKey = 'configuration';
+
+  protected $configuration;
+
+  protected $mvt_enabled;
 
   /**
    * The plugin instance ID.
@@ -66,21 +77,47 @@ class Agent extends ConfigEntityBase {
   protected $agent_type;
 
   /**
-   * Overrides \Drupal\Core\Config\Entity\ConfigEntityBase::getExportProperties();
+   * {@inheritdoc}
    */
-  public function getExportProperties() {
+  public function toArray() {
+    $properties = parent::toArray();
     $names = array(
       'agent_type',
-      'id',
-      'label',
-      'data',
-      'mvt_enabled',
+      'configuration',
     );
-    $properties = array();
     foreach ($names as $name) {
       $properties[$name] = $this->get($name);
     }
     return $properties;
   }
 
+  /**
+   * Overrides Drupal\Core\Entity\Entity::id().
+   */
+  public function id() {
+    return $this->name;
+  }
+
+  public function getPlugin() {
+    return $this->get('plugin');
+  }
+
+  public function getConfiguration() {
+    return $this->get('configuration');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getName() {
+    return $this->get('name');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setName($name) {
+    $this->set('name', $name);
+    return $this;
+  }
 }

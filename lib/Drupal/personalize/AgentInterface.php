@@ -15,17 +15,6 @@ use Drupal\Core\Plugin\PluginFormInterface;
  */
 interface AgentInterface extends PluginFormInterface {
 
-
-  /**
-   * Sends a goal to an agent.
-   *
-   * @param string $goal_name
-   *   The name of the goal being sent.
-   * @param int $value
-   *   (optional) The value of the goal being sent.
-   */
-  public function sendGoal($goal_name, $value = NULL);
-
   /**
    * Returns an array of assets that can be set as the #attached property
    * of an element in a render array.
@@ -34,17 +23,6 @@ interface AgentInterface extends PluginFormInterface {
    *   An array of assets keyed by type, e.g. 'js', 'css', 'library'.
    */
   public function getAssets();
-
-  /**
-   * Returns the options form for configuring this type of agent.
-   *
-   * @param $agent_data
-   *   The agent being edited, if it's an edit form.
-   *
-   * @return array
-   *   A FAPI array.
-   */
-  public static function optionsForm($agent_data);
 
   /**
    * A method to call once an agent has been saved.
