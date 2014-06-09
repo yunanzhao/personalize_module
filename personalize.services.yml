@@ -1,7 +1,12 @@
 services:
+  personalizer
+    class: Drupal\personalize\Personalizer
   plugin.manager.personalize_agent:
     class: Drupal\personalize\Plugin\Type\AgentManager
     arguments: ['@container.namespaces', '@cache.personalize_agent', '@language_manager', '@module_handler']
+  plugin.manager.personalize_option_set:
+    class: Drupal\personalize\Plugin\Type\OptionSetManager
+    arguments: ['@container.namespaces', '@cache.personalize_option_set', '@language_manager', '@module_handler']
   cache.personalize_agent:
     class: Drupal\Core\Cache\CacheBackendInterface
     tags:
@@ -9,3 +14,10 @@ services:
     factory_method: get
     factory_service: cache_factory
     arguments: [personalize_agent]
+  cache.personalize_option_set:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory_method: get
+    factory_service: cache_factory
+    arguments: [personalize_option_set]

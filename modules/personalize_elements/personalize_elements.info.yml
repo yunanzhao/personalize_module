@@ -1,0 +1,5 @@
+name: Personalize Elements
+description: The Personalize Elemnts module serves as an API for controlling personalization of content on pages based on the user's context.
+package: Personalization
+core:  8.x
+type: module
