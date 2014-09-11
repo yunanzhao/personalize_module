@@ -1,5 +1,5 @@
 services:
-  personalizer
+  personalizer:
     class: Drupal\personalize\Personalizer
   plugin.manager.personalize_agent:
     class: Drupal\personalize\Plugin\Type\AgentManager

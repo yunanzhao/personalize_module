@@ -539,10 +539,7 @@ function personalize_preprocess_node(&$variables) {
  * Implements hook_preprocess_HOOK().
  */
 function personalize_preprocess_block(&$variables) {
-  if (module_exists('personalize_blocks')) {
-    $block = $variables['elements']['#block'];
-    $variables['attributes_array']['data-personalize-entity-id'] = 'block/' . $block->bid;
-  }
+
 }
 
 /**
