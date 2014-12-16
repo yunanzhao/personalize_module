@@ -132,62 +132,6 @@ QUnit.asyncTest( "get visitor contexts test", function( assert ) {
   Drupal.personalize.getVisitorContexts(contexts, callback);
 });
 
-QUnit.asyncTest( "get visitor contexts timeout test", function( assert ) {
-  expect(3);
-  // Set-up
-  function assignDummyValues(contexts) {
-    var values = {
-      'some-context': 'some-value',
-      'some-other-context': 'some-other-value',
-      'mahna': 'dodoo'
-    };
-    var myValues = {};
-    for (var i in contexts) {
-      if (contexts.hasOwnProperty(i) && values.hasOwnProperty(i)) {
-        myValues[i] = values[i];
-      }
-    }
-    return myValues;
-  }
-  Drupal.personalize = Drupal.personalize || {};
-  Drupal.personalize.contextTimeout = 3000;
-
-  Drupal.personalize.visitor_context = Drupal.personalize.visitor_context || {};
-  Drupal.personalize.visitor_context.my_first_plugin = {
-    'getContext': function(contexts) {
-      return assignDummyValues(contexts);
-    }
-  };
-  Drupal.personalize.visitor_context.my_promise_plugin = {
-    'getContext': function(contexts) {
-      return new Promise(function(resolve, reject) {
-        setTimeout(function() {
-          resolve(assignDummyValues(contexts));
-        }, (Drupal.personalize.contextTimeout+1000));
-      });
-    }
-  }
-  // End of set-up.
-
-  var contexts = {
-    'my_first_plugin': {
-      'some-context': 'some-context',
-      'some-other-context': 'some-other-context'
-    },
-    'my_promise_plugin': {
-      'mahna': 'mahna'
-    }
-  };
-  var callback = function(contextValues) {
-    assert.ok(contextValues.hasOwnProperty('my_first_plugin'));
-    // Contexts should still be returned when there wasn't an error.
-    assert.equal(contextValues.my_first_plugin['some-context'], 'some-value');
-    assert.equal(contextValues.my_first_plugin['some-other-context'], 'some-other-value');
-    QUnit.start();
-  };
-  Drupal.personalize.getVisitorContexts(contexts, callback);
-});
-
 QUnit.test( "executor test", function( assert ) {
   // Test the executor for a regular option set.
   assert.equal(0, $('.osid-1-first-option').length);
