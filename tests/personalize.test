@@ -2198,7 +2198,7 @@ class PersonalizeAgentAdminTest extends PersonalizeBaseTest {
     personalize_option_set_save($option_set);
     $machine_name = $agent->getMachineName();
     $this->drupalGet('admin/structure/personalize');
-    // It should no longer be possible to delete this option set.
+    // It should no longer be possible to delete this agent.
     $this->assertNoLinkByHref($delete_path);
     $this->drupalGet($delete_path);
     $this->assertResponse(403);
@@ -2210,7 +2210,7 @@ class PersonalizeAgentAdminTest extends PersonalizeBaseTest {
     personalize_agent_set_status($machine_name, PERSONALIZE_STATUS_RUNNING);
 
     $this->drupalGet('admin/structure/personalize');
-    // It still should not be possible to delete this option set.
+    // It still should not be possible to delete this agent.
     $this->assertNoLinkByHref($delete_path);
     $this->drupalGet($delete_path);
     $this->assertResponse(403);
@@ -2222,11 +2222,49 @@ class PersonalizeAgentAdminTest extends PersonalizeBaseTest {
     $this->assertLinkByHref($delete_path);
     $this->drupalGet($delete_path);
     $this->assertResponse(200);
-    $this->drupalPost(NULL, array(), t('Delete'));
+
+    // Before deleting the agent we'll add a couple of goals, one reusable and
+    // one not. Only the reusable action should remain after deletion of the
+    // agent.
+    $goal_name1 = personalize_generate_machine_name($this->randomName(), 'visitor_actions_machine_name_exists', '_');
+    $goal_name2 = personalize_generate_machine_name($this->randomName(), 'visitor_actions_machine_name_exists', '_');
+    foreach (array($goal_name1, $goal_name2) as $i => $goal_name) {
+      $action = array(
+        'plugin' => 'link',
+        'label' => $goal_name,
+        'machine_name' => $goal_name,
+        'identifier' => '.some-class',
+        'event' => 'client::click',
+        'pages' => 'node',
+        // Set the first action as limited use.
+        'limited_use' => (int) ($i == 0),
+        'data' => array(),
+      );
+      $saved = visitor_actions_save_action($action);
+      $this->assertTrue($saved);
+      personalize_goal_save($agent->getMachineName(), $goal_name, 1);
+    }
+
+    // Confirm our actions exist.
+    $first_action = visitor_actions_custom_load($goal_name1, TRUE);
+    $this->assertNotNull($first_action);
+    $this->assertTrue($first_action['limited_use']);
+    $second_action = visitor_actions_custom_load($goal_name2, TRUE);
+    $this->assertNotNull($second_action);
+    $this->assertFalse($second_action['limited_use']);
+
+    // Now delete the agent
+    $this->drupalPost($delete_path, array(), t('Delete'));
     $this->resetAll();
 
     $agent_data = personalize_agent_load($machine_name);
     $this->assertNull($agent_data);
+
+    // Only the second action should still exist.
+    $first_action = visitor_actions_custom_load($goal_name1, TRUE);
+    $this->assertNull($first_action);
+    $second_action = visitor_actions_custom_load($goal_name2, TRUE);
+    $this->assertNotNull($second_action);
   }
 
   /**
